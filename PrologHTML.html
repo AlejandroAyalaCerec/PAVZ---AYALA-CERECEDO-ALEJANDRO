@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="tau-prolog.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<div>
+<body>
+    <p>Base de conocimiento para selección de cursos de un alumno</p>
+    <p>El alumno </p>
+    <select id="alumno">
+        <option value="alumno1" selected>Alumno 1</option>
+        <option value="alumno2">Alumno 2</option>
+        <option value="alumno3">Alumno 3</option>
+    </select>
+    <p>puede tomar el curso:</p>
+    <select id="sel_curso">
+        <option value="introduccion_programacion">Introducción a la Programación</option>
+        <option value="estructuras_datos">Estructuras de Datos</option>
+        <option value="algoritmos">Algoritmos</option>
+        <option value="bases_datos">Bases de Datos</option>
+        <option value="sistemas_operativos">Sistemas Operativos</option>
+        <option value="redes_computadoras">Redes de Computadoras</option>
+    </select>
+    <input type="button" id="busca" value="Consultar Base" onclick="consulta()"/>
+    <p id="respuesta"></p>
+    <p>Cursos disponibles para el próximo periodo:</p>
+    <input type="button" id="btn_cursos" value="Consultar Cursos Disponibles" onclick="consulta_cursos()"/>
+    <p id="respuesta2"></p>
+    <script id="cursos.pl" type="text/prolog">
+        % Definición de member/2 para Tau-Prolog
+        member(X, [X|_]).
+        member(X, [_|T]) :- member(X, T).
+
+        % Definición de cursos
+        curso(introduccion_programacion).
+        curso(estructuras_datos).
+        curso(algoritmos).
+        curso(bases_datos).
+        curso(sistemas_operativos).
+        curso(redes_computadoras).
+
+        % Prerrequisitos
+        prereq(estructuras_datos, introduccion_programacion).
+        prereq(algoritmos, estructuras_datos).
+        prereq(bases_datos, estructuras_datos).
+        prereq(sistemas_operativos, estructuras_datos).
+        prereq(redes_computadoras, sistemas_operativos).
+
+        % Cursos aprobados por alumnos
+        aprobado(alumno1, introduccion_programacion).
+        aprobado(alumno1, estructuras_datos).
+        aprobado(alumno2, introduccion_programacion).
+        aprobado(alumno3, introduccion_programacion).
+        aprobado(alumno3, estructuras_datos).
+        aprobado(alumno3, algoritmos).
+
+        % Regla para verificar si un alumno puede tomar un curso
+        puede_tomar(Alumno, Curso) :-
+            curso(Curso),
+            findall(Prerreq, prereq(Curso, Prerreq), Prerreqs),
+            forall(member(P, Prerreqs), aprobado(Alumno, P)).
+
+        % Regla para obtener cursos disponibles
+        cursos_disponibles(Alumno, Cursos) :-
+            findall(Curso, (curso(Curso), puede_tomar(Alumno, Curso), \+ aprobado(Alumno, Curso)), Cursos).
+    </script>
+    <script>
+        function buscar(pregunta, p, esLista = false) {
+            var session = pl.create();
+            var parser = session.consult("cursos.pl");
+            var respuesta = false;
+            var listaCursos = [];
+
+            if (parser === true) {
+                session.query(pregunta);
+                var callback = function(answer) {
+                    let r = pl.format_answer(answer);
+                    console.log("respuesta: " + r);
+                    if (esLista) {
+                        if (r && r !== "false" && r !== "true") {
+                            // Tau-Prolog devuelve listas como "[curso1,curso2,...]"
+                            let cursos = r.replace(/[\[\]]/g, '').split(',').map(c => c.trim());
+                            listaCursos = cursos.filter(c => c !== '');
+                        }
+                    } else {
+                        respuesta = (r.substring(0, 4) === 'true');
+                    }
+                };
+                session.answer(callback);
+            } else {
+                console.log("analizador: error " + parser);
+                respuesta = false;
+            }
+            return esLista ? listaCursos : respuesta;
+        }
+
+        function consulta() {
+            let curso = document.getElementById("sel_curso").value;
+            var p = document.getElementById("alumno").value;
+            if (p.length > 0) {
+                let pregunta = "puede_tomar(" + p + "," + curso + ").";
+                console.log(pregunta, p);
+                let respuesta = buscar(pregunta, p);
+                setTimeout(() => { // Retraso para asegurar que Tau-Prolog procese la consulta
+                    if (respuesta) {
+                        document.getElementById("respuesta").innerHTML = p + " sí puede tomar el curso " + curso.replace(/_/g, ' ');
+                    } else {
+                        document.getElementById("respuesta").innerHTML = p + " NO puede tomar el curso " + curso.replace(/_/g, ' ');
+                    }
+                }, 100);
+            } else {
+                document.getElementById("respuesta").innerHTML = "debe seleccionar un alumno";
+            }
+        }
+
+        function consulta_cursos() {
+            var p = document.getElementById("alumno").value;
+            if (p.length > 0) {
+                let pregunta = "cursos_disponibles(" + p + ",Cursos).";
+                console.log(pregunta);
+                let respuesta = buscar(pregunta, p, true);
+                setTimeout(() => { // Retraso para asegurar que Tau-Prolog procese la consulta
+                    if (respuesta.length > 0) {
+                        let cursosTexto = respuesta.map(c => c.replace(/_/g, ' ')).join(", ");
+                        document.getElementById("respuesta2").innerHTML = p + " puede tomar los siguientes cursos: " + cursosTexto;
+                    } else {
+                        document.getElementById("respuesta2").innerHTML = p + " no tiene cursos disponibles para tomar.";
+                    }
+                }, 100);
+            } else {
+                document.getElementById("respuesta2").innerHTML = "debe seleccionar un alumno";
+            }
+        }
+    </script>
+</body>
+</div>
+</html>
