@@ -19,7 +19,7 @@ Este tutorial te guiará paso a paso para obtener tu proyecto (HTML, CSS, JS) de
 2.  **Copia** la URL HTTPS de tu repositorio (la encuentras en el botón **`<> Code`**).
 3.  Ejecuta el siguiente comando, reemplazando la URL de ejemplo:
     ```bash
-    git clone [[https://github.com/tu-usuario/nombre-de-tu-repo.git](https://github.com/tu-usuario/nombre-de-tu-repo.git)(https://github.com/AlejandroAyalaCerec/PAVZ---AYALA-CERECEDO-ALEJANDRO.git)
+    git clone https://github.com/AlejandroAyalaCerec/PAVZ---AYALA-CERECEDO-ALEJANDRO.git
     ```
 
 ---
@@ -34,3 +34,4 @@ Dado que tu proyecto es una estructura web básica (HTML, CSS y JS), no necesita
 
 
 > 🎉 **¡Listo!** El archivo se **abrirá automáticamente** en tu navegador web predeterminado (Chrome, Firefox, Safari, etc.) y mostrará tu proyecto, aplicando los estilos (`.css`) y ejecutando la lógica (`.js`).
+
