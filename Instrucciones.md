@@ -8,7 +8,7 @@ Este tutorial te guiará paso a paso para obtener tu proyecto (HTML, CSS, JS) de
 
 #### Opción A: Descarga Directa (Recomendada)
 
-1.  Ve a la página principal de tu **repositorio** en GitHub.
+1.  Ve a la página principal de tu **repositorio** en GitHub https://github.com/AlejandroAyalaCerec/PAVZ---AYALA-CERECEDO-ALEJANDRO.git
 2.  Busca el botón verde **`<> Code`** (`Código`).
 3.  Haz clic en él y selecciona **`Download ZIP`** (Descargar ZIP).
 4.  Localiza el archivo ZIP en tu carpeta de descargas y **descomprímelo** (extráelo) en una ubicación fácil de recordar (por ejemplo, el escritorio).
@@ -34,4 +34,5 @@ Dado que tu proyecto es una estructura web básica (HTML, CSS y JS), no necesita
 
 
 > 🎉 **¡Listo!** El archivo se **abrirá automáticamente** en tu navegador web predeterminado (Chrome, Firefox, Safari, etc.) y mostrará tu proyecto, aplicando los estilos (`.css`) y ejecutando la lógica (`.js`).
+
 
